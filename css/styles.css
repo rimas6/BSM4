@@ -38,8 +38,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
 
 .logo-icon {
-  width: auto;   /* يخلي المساحة تأخذ حجم الصورة بالضبط بدون ما تعرض البار */
-  height: auto;
+  width: 50;   /* يخلي المساحة تأخذ حجم الصورة بالضبط بدون ما تعرض البار */
+  height: 50;
   background: transparent;
   border-radius: 0;
   display: flex;
