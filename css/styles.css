@@ -48,11 +48,9 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   box-shadow: none;
 }
 
-/* 2. التحكم في حجم اللوجو بحيث لا يضغط على البار */
 .logo-icon img {
-  height: 40px !important;  /* هذا الرقم هو اللي يحدد "نحافة" البار، لو صغرتيه يصغر البار */
-  width: auto !important;   /* العرض يتعدل تلقائياً عشان ما تمنط الصورة */
-  max-width: 200px !important; 
+  width: 38px;
+  height: 38px;
   object-fit: contain;
 }
 .logo span{color:#ffffff}
