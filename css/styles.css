@@ -31,7 +31,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
 
 /* ── HEADER ───────────────────────────────────────────────── */
 .app-header{display:flex;align-items:center;justify-content:space-between;width:100%;left:0;right:0;
-  padding:16px 24px;border-bottom:1px solid var(--border);
+  padding:8px 24px;border-bottom:1px solid var(--border);
   background:rgba(13,17,23,0.92);backdrop-filter:blur(14px);
   position:sticky;top:0;z-index:100;flex-shrink:0}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);
@@ -48,9 +48,11 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   box-shadow: none;
 }
 
+/* 2. التحكم في حجم اللوجو بحيث لا يضغط على البار */
 .logo-icon img {
-  width: 80px;  /* هنا تكبرين الصورة لحالها (تقدرين تزيدين الرقم أو تنقصينه لين يضبط معك) */
-  height: auto;  /* يخلي الطول متناسق مع العرض تلقائياً */
+  height: 40px !important;  /* هذا الرقم هو اللي يحدد "نحافة" البار، لو صغرتيه يصغر البار */
+  width: auto !important;   /* العرض يتعدل تلقائياً عشان ما تمنط الصورة */
+  max-width: 200px !important; 
   object-fit: contain;
 }
 .logo span{color:#ffffff}
