@@ -120,6 +120,11 @@ function cleanup() {
   if (S.camera)  { try { S.camera.stop(); }  catch (e) {} S.camera = null; }
   if (S.stream)  { S.stream.getTracks().forEach(t => t.stop()); S.stream = null; }
   if (S.pose)    { try { S.pose.close(); }   catch (e) {} S.pose = null; }
+   const video = document.getElementById('videoEl');
+if (video) {
+  video.srcObject = null;
+  video.style.display = 'none';
+}
 }
 
 /* ── KEYBOARD SHORTCUT (S = demo mode) ──────────────────── */
