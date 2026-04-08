@@ -753,7 +753,7 @@ function processWristMovement(wristY,now){
   const rA=recent.reduce((s,v)=>s+v.y,0)/recent.length,oA=old.reduce((s,v)=>s+v.y,0)/old.length;
 if(rA-oA>0.011&&(!S.lastPeakTime||now-S.lastPeakTime>280)){
     S.lastPeakTime=now;S.compressionCount++;S.compressionTimes.push(now);
-    if(S.compressionTimes.length>20)S.compressionTimes.shift();
+    if(S.compressionTimes.length>30)S.compressionTimes.shift();
     document.getElementById('compCount').textContent=S.compressionCount;
     document.getElementById('compSub').textContent=`${S.compressionCount} action${S.compressionCount!==1?'s':''} detected`;
     addRhythmSpike();calcBPM();
@@ -761,7 +761,7 @@ if(rA-oA>0.011&&(!S.lastPeakTime||now-S.lastPeakTime>280)){
 }
 function calcBPM(){
   const t=S.compressionTimes;if(t.length<3)return;
-  const last=t.slice(-7),iv=[];for(let i=1;i<last.length;i++)iv.push(last[i]-last[i-1]);
+  const last=t.slice(-12),iv=[];for(let i=1;i<last.length;i++)iv.push(last[i]-last[i-1]);
   S.currentBPM=Math.max(0,Math.min(240,Math.round(60000/(iv.reduce((a,b)=>a+b,0)/iv.length))));
   updatePMDisplay(S.currentBPM);
 }
