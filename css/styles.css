@@ -38,8 +38,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
 /* هذا الكود سيزيل المربع الأزرق ويكبر المساحة */
 .logo-icon {
-  width: 65px;  /* يمكنك زيادة هذا الرقم لتكبير الشعار أكثر */
-  height: 65px; /* تأكدي أن الطول والعرض متساويان */
+  width: 80px;  /* يمكنك زيادة هذا الرقم لتكبير الشعار أكثر */
+  height: 80px; /* تأكدي أن الطول والعرض متساويان */
   background: transparent; /* هذه الكلمة تجعل الخلفية شفافة وتحذف الأزرق */
   display: flex;
   align-items: center;
@@ -47,12 +47,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   box-shadow: none; /* إزالة الظل */
 }
 
-/* هذا الكود لضمان أن صورتك الجديدة تملأ المساحة بشكل صحيح */
-.logo-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+
 .logo span{color:#ffffff}
 .header-badge{font-family:var(--fm);font-size:11px;color:var(--accent);
   background:var(--accent-dim);border:1px solid var(--border-bright);
