@@ -24,13 +24,75 @@ async function requestCamera() {
     document.getElementById('session-status').textContent = 'Loading AI Model...';
     await initPose();
     document.getElementById('session-status').textContent = 'Session Active';
-    startTimer();
-    S.running = true;
+   //  عداد 3 ثوانٍ قبل البدء
+await startCountdown();
+startTimer();
+S.running = true;
+notify('Session started!');
     notify('Session started!');
   } catch (err) {
     showCamState('stateDenied');
     document.getElementById('session-status').textContent = 'Camera Error';
   }
+}
+
+/* ── startCountdown ميثود جديده عشان تتعامل مع العداد ───────────────────────────────────── */
+function startCountdown() {
+  return new Promise(resolve => {
+    // إنشاء عنصر العداد
+    const overlay = document.createElement('div');
+    overlay.id = 'countdownOverlay';
+    overlay.style.cssText = `
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.65);
+      z-index: 50;
+      border-radius: inherit;
+    `;
+    overlay.innerHTML = `
+      <div id="countdownNum" style="
+        font-size: 96px;
+        font-weight: 800;
+        color: #fff;
+        font-family: var(--fs);
+        line-height: 1;
+        text-shadow: 0 0 40px rgba(59,130,246,0.8);
+      ">3</div>
+      <div style="
+        margin-top: 16px;
+        font-size: 15px;
+        color: rgba(255,255,255,0.7);
+        font-family: var(--fm);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      ">Get ready...</div>
+    `;
+    
+    // أضفه للـ cam-inner
+    const camInner = document.querySelector('.cam-inner');
+    camInner.appendChild(overlay);
+    
+    let count = 3;
+    const numEl = overlay.querySelector('#countdownNum');
+    
+    const tick = setInterval(() => {
+      count--;
+      if (count > 0) {
+        numEl.textContent = count;
+        numEl.style.animation = 'none';
+        numEl.offsetHeight; // reflow
+        numEl.style.animation = 'countPulse 0.9s ease-out';
+      } else {
+        clearInterval(tick);
+        overlay.remove();
+        resolve();
+      }
+    }, 1000);
+  });
 }
 
 /* ── CAM STATE HELPERS ───────────────────────────────────── */
@@ -101,7 +163,7 @@ function onPoseResults(results) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Ghost: show when no action yet, hide after first action
-  if (S.compressionCount === 0) drawGhostPose(ctx, canvas.width, canvas.height);
+if (S.compressionCount < 3) drawGhostPose(ctx, canvas.width, canvas.height);
 
   if (!results.poseLandmarks || !results.poseLandmarks.length) {
     setPoseStatus(false);
@@ -231,7 +293,7 @@ function drawSimSkeleton() {
   const W = canvas.width, H = canvas.height;
   const b = Math.sin(Date.now() / 290) * 0.028;
 
-  if (S.compressionCount === 0) drawGhostPose(ctx, W, H);
+if (S.compressionCount < 3) drawGhostPose(ctx, W, H);
 
   const pts = {
     nose:  [.50,.10], lSho:[.37,.28], rSho:[.63,.28],
