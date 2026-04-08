@@ -1,283 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Behavioural Skills Mentor</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:#0d1117; --surface:#161b22; --surface2:#1c2230; --surface3:#232b3a;
-  --border:rgba(255,255,255,0.08); --border-bright:rgba(59,130,246,0.40);
-  --accent:#4f9aff; --accent-dim:rgba(79,154,255,0.12);
-  --text:#e6edf3; --text-muted:#8b949e; --text-dim:#6e7681;
-  --good:#3fb950; --warn:#d29922; --bad:#f85149;
-  --good-bg:rgba(63,185,80,0.10); --warn-bg:rgba(210,153,34,0.10); --bad-bg:rgba(248,81,73,0.10);
-  --good-border:rgba(63,185,80,0.30); --warn-border:rgba(210,153,34,0.30); --bad-border:rgba(248,81,73,0.30);
-  --fd:'Syne',sans-serif; --fb:'DM Sans',sans-serif; --fm:'DM Mono',monospace;
-  --r:10px; --rl:16px;
-  --sh:0 1px 3px rgba(0,0,0,0.30),0 4px 12px rgba(0,0,0,0.25);
-  --shl:0 4px 20px rgba(0,0,0,0.40);
-}
-html,body{min-height:100vh}
-body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hidden}
-.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:radial-gradient(circle,rgba(79,154,255,0.06) 1px,transparent 1px);
-  background-size:28px 28px}
-.grid-bg::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(59,130,246,0.04) 0%,transparent 40%)}
-.page{display:none;position:relative;z-index:1;min-height:100vh}
-.page.active{display:flex;flex-direction:column}
-.app-header{display:flex;align-items:center;justify-content:space-between;width:100%;left:0;right:0;
-  padding:16px 24px;border-bottom:1px solid var(--border);
-  background:rgba(13,17,23,0.92);backdrop-filter:blur(14px);
-  position:sticky;top:0;z-index:100;flex-shrink:0}
-.logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);
-  font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
-.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(59,130,246,0.3)}
-.logo-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round}
-.logo span{color:#ffffff}
-.header-badge{font-family:var(--fm);font-size:11px;color:var(--accent);
-  background:var(--accent-dim);border:1px solid var(--border-bright);
-  border-radius:20px;padding:4px 12px;letter-spacing:0.05em;
-  display:flex;align-items:center;gap:6px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
-#page-home{justify-content:center;align-items:center}
-.hero{text-align:center;padding:48px 24px 72px;max-width:860px;margin:0 auto;
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.hero-eyebrow{font-family:var(--fm);font-size:11px;letter-spacing:0.18em;
-  color:var(--accent);text-transform:uppercase;margin-bottom:24px;
-  display:flex;align-items:center;gap:10px}
-.hero-eyebrow::before,.hero-eyebrow::after{content:'';height:1px;width:40px;background:var(--accent);opacity:0.4}
-.hero h1{font-family:var(--fd);font-size:clamp(36px,5vw,64px);font-weight:800;
-  line-height:0.97;letter-spacing:-0.04em;margin-bottom:20px}
-.hero h1 .line1{display:block;color:var(--text)}
-.hero h1 .line2{display:block;color:var(--accent)}
-.hero-desc{font-size:15px;color:var(--text-muted);line-height:1.72;max-width:500px;margin-bottom:40px;font-weight:300}
-.skill-selector-wrap{width:100%;max-width:720px}
-.skill-selector-label{font-family:var(--fm);font-size:11px;letter-spacing:0.12em;
-  color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;text-align:left}
-.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:14px}
-.skill-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);
-  padding:14px 16px;cursor:pointer;text-align:left;transition:all 0.18s;
-  display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
-.skill-card:hover{border-color:var(--border-bright);box-shadow:var(--shl)}
-.skill-card.selected{border-color:var(--accent);background:var(--accent-dim);
-  box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
-.skill-card-icon{width:36px;height:36px;border-radius:9px;background:var(--surface2);
-  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0}
-.skill-card.selected .skill-card-icon{background:rgba(59,130,246,0.15)}
-.skill-card-name{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--text)}
-.skill-card-tag{font-family:var(--fm);font-size:10px;color:var(--text-dim);margin-top:3px}
-.source-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:11px;
-  color:var(--accent);background:var(--accent-dim);border:1px solid var(--border-bright);
-  border-radius:8px;padding:5px 12px;text-decoration:none;transition:background 0.2s;margin-bottom:14px}
-.source-chip:hover{background:rgba(59,130,246,0.18)}
-.source-chip svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round}
-.criteria-preview{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;min-height:26px}
-.criteria-tag{font-family:var(--fm);font-size:10px;color:var(--accent);
-  background:var(--accent-dim);border:1px solid var(--border-bright);border-radius:6px;padding:3px 9px}
-.criteria-empty{font-family:var(--fm);font-size:11px;color:var(--text-dim)}
-.cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;
-  font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:0.02em;
-  border:none;border-radius:var(--r);padding:16px 40px;cursor:pointer;
-  box-shadow:0 4px 18px rgba(59,130,246,0.30);transition:transform 0.2s,box-shadow 0.2s;
-  opacity:0.45;pointer-events:none}
-.cta-btn.ready{opacity:1;pointer-events:all}
-.cta-btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,130,246,0.38)}
-.cta-btn svg{width:18px;height:18px;fill:#fff}
-#page-practice{padding:24px;gap:20px}
-.practice-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;flex:1;align-items:start}
-.cam-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);
-  overflow:hidden;position:relative;box-shadow:var(--sh)}
-.cam-inner{position:relative;background:#1e2533;aspect-ratio:4/3}
-#videoEl{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
-#poseCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transform:scaleX(-1)}
-.cam-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-#stateIdle{background:linear-gradient(160deg,#0d1117 0%,#161b22 100%)}
-.idle-body{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:28px 20px;max-width:300px}
-.cam-icon-ring{width:80px;height:80px;border-radius:50%;background:var(--surface2);
-  border:1.5px solid var(--border-bright);box-shadow:var(--shl);
-  display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:4px}
-.cam-icon-ring svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.ring-pulse{position:absolute;inset:-10px;border-radius:50%;border:1.5px solid rgba(59,130,246,0.2);animation:ripple 2.4s ease-out infinite}
-.ring-pulse2{position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(59,130,246,0.1);animation:ripple 2.4s ease-out infinite 0.7s}
-@keyframes ripple{0%{transform:scale(.85);opacity:0}30%{opacity:1}100%{transform:scale(1.12);opacity:0}}
-.idle-title{font-family:var(--fd);font-weight:800;font-size:17px;color:var(--text)}
-.idle-skill-badge{font-family:var(--fm);font-size:11px;color:var(--accent);
-  background:var(--accent-dim);border:1px solid var(--border-bright);border-radius:8px;padding:4px 12px}
-.idle-note{font-family:var(--fm);font-size:10px;color:var(--text-dim);text-align:center;max-width:210px}
-.btn-enable-cam{display:flex;align-items:center;gap:9px;background:var(--accent);color:#fff;
-  font-family:var(--fd);font-weight:700;font-size:14px;border:none;border-radius:11px;
-  padding:12px 28px;cursor:pointer;box-shadow:0 3px 14px rgba(59,130,246,0.28);transition:all 0.2s}
-.btn-enable-cam:hover{background:#2563eb;transform:translateY(-1px)}
-.btn-enable-cam svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-#stateRequesting{background:linear-gradient(160deg,#0d1117 0%,#161b22 100%);display:none}
-.req-body{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:28px 20px;max-width:280px}
-.req-icon{width:72px;height:72px;border-radius:50%;background:var(--surface2);border:1.5px solid var(--border);
-  box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;position:relative}
-.req-icon svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.req-spin{position:absolute;inset:-5px;border-radius:50%;border:2.5px solid transparent;
-  border-top-color:var(--accent);border-right-color:rgba(59,130,246,0.3);animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.req-title{font-family:var(--fd);font-weight:800;font-size:16px;color:var(--text)}
-.req-desc{font-size:12px;color:var(--text-muted);line-height:1.65;max-width:210px}
-.req-dots{display:flex;gap:6px;margin-top:4px}
-.req-dot{width:7px;height:7px;border-radius:50%;background:rgba(59,130,246,0.2)}
-.req-dot:nth-child(1){animation:dp 1.2s ease 0s infinite}
-.req-dot:nth-child(2){animation:dp 1.2s ease .2s infinite}
-.req-dot:nth-child(3){animation:dp 1.2s ease .4s infinite}
-@keyframes dp{0%,100%{background:rgba(59,130,246,0.2);transform:scale(1)}50%{background:var(--accent);transform:scale(1.4)}}
-#stateDenied{background:linear-gradient(160deg,#1a0d0d 0%,#2a1515 100%);display:none}
-.denied-body{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px 18px;max-width:280px}
-.denied-icon{width:64px;height:64px;border-radius:50%;background:var(--bad-bg);border:1.5px solid var(--bad-border);display:flex;align-items:center;justify-content:center}
-.denied-icon svg{width:26px;height:26px;stroke:var(--bad);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.denied-title{font-family:var(--fd);font-weight:800;font-size:16px;color:var(--bad)}
-.denied-desc{font-size:12px;color:var(--text-muted);line-height:1.6;max-width:210px}
-.btn-reload{background:var(--bad);color:#fff;font-family:var(--fd);font-weight:700;font-size:13px;
-  border:none;border-radius:9px;padding:10px 24px;cursor:pointer}
-.cam-overlay-tl{position:absolute;top:12px;left:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.rec-badge{background:rgba(22,27,34,0.92);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);
-  border-radius:6px;padding:5px 10px;font-family:var(--fm);font-size:11px;
-  color:var(--text);display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.rec-badge.live{color:var(--bad);border-color:rgba(220,38,38,0.3)}
-.cam-overlay-tr{position:absolute;top:12px;right:12px}
-.timer-badge{background:rgba(22,27,34,0.92);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);
-  border-radius:6px;padding:5px 12px;font-family:var(--fm);font-size:18px;font-weight:500;
-  color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.timer-badge.urgent{color:var(--bad);border-color:rgba(220,38,38,0.3)}
-.rhythm-section{padding:14px 16px;border-top:1px solid var(--border);background:var(--surface)}
-.section-label{font-family:var(--fm);font-size:10px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px}
-.rhythm-wave{display:flex;align-items:flex-end;gap:2px;height:44px;background:var(--surface2);
-  border-radius:6px;padding:4px 6px;overflow:hidden;border:1px solid var(--border)}
-.r-bar{flex:1;min-width:4px;max-width:12px;border-radius:2px 2px 0 0;background:var(--surface3);transition:height 0.15s,background 0.3s}
-.cam-footer{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
-  border-top:1px solid var(--border);background:var(--surface)}
-.pose-status{display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:12px;color:var(--text-muted)}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim)}
-.status-dot.on{background:var(--good);animation:blink 1.5s infinite}
-.stop-btn{background:var(--bad-bg);border:1px solid var(--bad-border);color:var(--bad);
-  font-family:var(--fb);font-size:13px;font-weight:500;border-radius:8px;
-  padding:8px 18px;cursor:pointer;transition:background 0.2s}
-.stop-btn:hover{background:rgba(220,38,38,0.14)}
-.side-panel{display:flex;flex-direction:column;gap:14px}
-.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
-.mc-header{font-family:var(--fm);font-size:10px;letter-spacing:0.1em;color:var(--text-dim);
-  text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-.mc-chip{font-family:var(--fm);font-size:10px;color:var(--accent);background:var(--accent-dim);
-  border:1px solid var(--border-bright);border-radius:6px;padding:2px 8px}
-.mc-big{font-family:var(--fd);font-size:38px;font-weight:800;line-height:1;letter-spacing:-0.03em}
-.mc-unit{font-size:16px;color:var(--text-muted);margin-left:3px;font-weight:400}
-.mc-sub{font-size:12px;color:var(--text-muted);margin-top:6px}
-.mc-range{height:4px;background:var(--surface3);border-radius:2px;margin-top:10px;overflow:hidden;
-  position:relative;border:1px solid var(--border)}
-.mc-range-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 0.4s}
-.scores-mini{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh)}
-.score-row-mini{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.score-row-mini:last-child{margin-bottom:0}
-.score-name-mini{font-size:11px;color:var(--text-muted);flex:1;font-family:var(--fm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.score-bar-mini{flex:2;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;border:1px solid var(--border)}
-.score-bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 0.6s}
-.score-pct-mini{font-size:11px;color:var(--text);font-family:var(--fm);min-width:28px;text-align:right}
-.feedback-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
-.feedback-list{display:flex;flex-direction:column;gap:7px}
-.fb-item{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5;
-  padding:8px 10px;border-radius:7px;border:1px solid transparent;animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
-.fb-good{background:var(--good-bg);border-color:var(--good-border);color:var(--good)}
-.fb-warn{background:var(--warn-bg);border-color:var(--warn-border);color:var(--warn)}
-.fb-bad{background:var(--bad-bg);border-color:var(--bad-border);color:var(--bad)}
-.fb-icon{font-size:14px;flex-shrink:0;line-height:1.4}
-#page-results{align-items:center;justify-content:center;padding:40px 24px}
-.results-container{max-width:720px;width:100%}
-.results-header{text-align:center;margin-bottom:40px}
-.results-eyebrow{font-family:var(--fm);font-size:11px;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:16px}
-.results-title{font-family:var(--fd);font-size:36px;font-weight:800;letter-spacing:-0.03em;margin-bottom:8px;color:var(--text)}
-.score-circle-wrap{display:flex;justify-content:center;margin-bottom:20px}
-.score-circle{width:160px;height:160px;position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column}
-.score-circle svg{position:absolute;inset:0;transform:rotate(-90deg)}
-.score-circle-num{font-family:var(--fd);font-size:52px;font-weight:800;letter-spacing:-0.04em;position:relative;z-index:1}
-.score-circle-label{font-size:12px;color:var(--text-muted);font-family:var(--fm);letter-spacing:0.05em;position:relative;z-index:1}
-.score-grade{font-family:var(--fd);font-size:22px;font-weight:700;text-align:center;margin-bottom:8px}
-.score-grade-desc{text-align:center;font-size:14px;color:var(--text-muted);margin-bottom:40px}
-.breakdown-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
-.breakdown-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
-.bc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.bc-name{font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase}
-.bc-weight{font-size:11px;color:var(--text-dim);font-family:var(--fm)}
-.bc-score{font-family:var(--fd);font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:10px}
-.bc-bar{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;border:1px solid var(--border)}
-.bc-bar-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1)}
-.bc-feedback{font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.5}
-.source-ref{display:flex;align-items:center;gap:10px;background:var(--surface);
-  border:1px solid var(--border-bright);border-radius:var(--r);padding:14px 18px;
-  margin-bottom:20px;box-shadow:var(--sh)}
-.source-ref-icon{width:32px;height:32px;border-radius:8px;background:var(--accent-dim);
-  border:1px solid var(--border-bright);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.source-ref-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round}
-.source-ref-text{flex:1}
-.source-ref-label{font-family:var(--fm);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px}
-.source-ref-link{font-family:var(--fm);font-size:12px;color:var(--accent);text-decoration:none}
-.source-ref-link:hover{text-decoration:underline}
-.tips-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:28px;box-shadow:var(--sh)}
-.tips-title{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text)}
-.tip-item{display:flex;gap:12px;font-size:13px;color:var(--text-muted);line-height:1.6;padding:8px 0;border-bottom:1px solid var(--border)}
-.tip-item:last-child{border-bottom:none;padding-bottom:0}
-.tip-num{font-family:var(--fm);font-size:11px;color:var(--accent);flex-shrink:0;padding-top:2px}
-.results-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn-retry{background:var(--accent);color:#fff;font-family:var(--fd);font-size:15px;font-weight:700;
-  border:none;border-radius:var(--r);padding:14px 32px;cursor:pointer;display:flex;align-items:center;gap:8px;
-  box-shadow:0 3px 14px rgba(59,130,246,0.25);transition:transform 0.2s,box-shadow 0.2s}
-.btn-retry:hover{transform:translateY(-2px);background:#2563eb}
-.btn-home{background:transparent;color:var(--text-muted);font-family:var(--fb);font-size:14px;
-  border:1px solid var(--border);border-radius:var(--r);padding:14px 28px;cursor:pointer;transition:border-color 0.2s,color 0.2s}
-.btn-home:hover{border-color:var(--border-bright);color:var(--text)}
-.color-good{color:var(--good)}.color-warn{color:var(--warn)}.color-bad{color:var(--bad)}.color-neutral{color:var(--accent)}
-.notif{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);
-  border:1px solid var(--border-bright);border-radius:10px;padding:12px 20px;font-size:13px;
-  color:var(--accent);font-family:var(--fm);letter-spacing:0.04em;z-index:999;
-  opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;box-shadow:var(--shl)}
-.notif.show{opacity:1}
-@media(max-width:900px){
-  .practice-grid{grid-template-columns:1fr}
-  .breakdown-grid{grid-template-columns:1fr}
-}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Behavioural Skills Mentor</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/styles.css"/>
 </head>
 <body>
+
 <div class="grid-bg"></div>
 
-<!-- HOME -->
+<!-- ═══════════════════════════════════════════════════════════
+     HOME PAGE
+     ═══════════════════════════════════════════════════════ -->
 <div id="page-home" class="page active">
   <header class="app-header">
     <div class="logo">
-      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
       <span>Behavioural Skills Mentor</span>
     </div>
     <div class="header-badge"><span class="live-dot"></span>Clinical Skills Mentor</div>
   </header>
+
   <main class="hero">
     <div class="hero-eyebrow">Evidence-Based Medical Training</div>
-    <h1><span class="line1">Clinical Skills</span><span class="line2">Reimagined.</span></h1>
+    <h1>
+      <span class="line1">Clinical Skills</span>
+      <span class="line2">Reimagined.</span>
+    </h1>
     <p class="hero-desc">Select a clinical skill — assessment criteria are sourced from official guidelines. Your webcam evaluates your technique in real time using edge-AI.</p>
+
     <div class="skill-selector-wrap">
       <div class="skill-selector-label">// select a skill to assess</div>
       <div class="skill-grid" id="skillGrid"></div>
+
       <div id="sourceChipWrap" style="display:none;">
         <a id="sourceChip" class="source-chip" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
           <span id="sourceChipLabel">Reference</span>
         </a>
       </div>
+
       <div class="criteria-preview" id="criteriaPreview">
         <span class="criteria-empty">Select a skill to preview assessment dimensions</span>
       </div>
+
       <button class="cta-btn" id="startBtn" onclick="startPractice()">
         <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
         Start Assessment
@@ -286,25 +66,39 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   </main>
 </div>
 
-<!-- PRACTICE -->
+<!-- ═══════════════════════════════════════════════════════════
+     PRACTICE PAGE
+     ═══════════════════════════════════════════════════════ -->
 <div id="page-practice" class="page">
   <header class="app-header">
     <div class="logo">
-      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
       <span>Behavioural Skills Mentor</span>
     </div>
     <div class="header-badge"><span class="live-dot"></span><span id="session-status">Ready</span></div>
   </header>
+
   <div class="practice-grid" style="flex:1;">
+
+    <!-- Camera Panel -->
     <div class="cam-panel">
       <div class="cam-inner">
         <video id="videoEl" autoplay muted playsinline style="display:none;"></video>
         <canvas id="poseCanvas" style="display:none;"></canvas>
+
+        <!-- State: Idle -->
         <div class="cam-state" id="stateIdle">
           <div class="idle-body">
             <div class="cam-icon-ring">
-              <div class="ring-pulse"></div><div class="ring-pulse2"></div>
-              <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.2"/><path d="M9 3h6l1.5 3H7.5z"/></svg>
+              <div class="ring-pulse"></div>
+              <div class="ring-pulse2"></div>
+              <svg viewBox="0 0 24 24">
+                <rect x="2" y="6" width="20" height="14" rx="2.5"/>
+                <circle cx="12" cy="13" r="3.2"/>
+                <path d="M9 3h6l1.5 3H7.5z"/>
+              </svg>
             </div>
             <div class="idle-title">Camera Access Required</div>
             <div class="idle-skill-badge" id="skillBadgePractice">—</div>
@@ -315,36 +109,62 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
             <div class="idle-note">// No video recorded or transmitted — all analysis runs locally.</div>
           </div>
         </div>
+
+        <!-- State: Requesting -->
         <div class="cam-state" id="stateRequesting">
           <div class="req-body">
-            <div class="req-icon"><div class="req-spin"></div>
-              <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.2"/><path d="M9 3h6l1.5 3H7.5z"/></svg>
+            <div class="req-icon">
+              <div class="req-spin"></div>
+              <svg viewBox="0 0 24 24">
+                <rect x="2" y="6" width="20" height="14" rx="2.5"/>
+                <circle cx="12" cy="13" r="3.2"/>
+                <path d="M9 3h6l1.5 3H7.5z"/>
+              </svg>
             </div>
             <div class="req-title">Requesting Camera…</div>
             <div class="req-desc">Click <strong>Allow</strong> in the browser prompt.</div>
-            <div class="req-dots"><div class="req-dot"></div><div class="req-dot"></div><div class="req-dot"></div></div>
+            <div class="req-dots">
+              <div class="req-dot"></div>
+              <div class="req-dot"></div>
+              <div class="req-dot"></div>
+            </div>
           </div>
         </div>
+
+        <!-- State: Denied -->
         <div class="cam-state" id="stateDenied">
           <div class="denied-body">
-            <div class="denied-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div class="denied-icon">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+              </svg>
+            </div>
             <div class="denied-title">Camera Blocked</div>
             <div class="denied-desc">Click the lock icon → Allow → Reload.</div>
             <button class="btn-reload" onclick="location.reload()">↺ Reload</button>
           </div>
         </div>
+
+        <!-- Live Overlay -->
         <div id="liveOverlay" style="display:none;position:absolute;inset:0;pointer-events:none;">
           <div class="cam-overlay-tl">
             <div class="rec-badge live"><span class="live-dot" style="background:var(--bad)"></span> LIVE</div>
             <div class="rec-badge">POSE: <span id="poseStatusTxt" style="color:var(--warn);margin-left:4px;">DETECTING</span></div>
           </div>
-          <div class="cam-overlay-tr"><div class="timer-badge" id="timerDisp">0:30</div></div>
+          <div class="cam-overlay-tr">
+            <div class="timer-badge" id="timerDisp">0:30</div>
+          </div>
         </div>
       </div>
+
+      <!-- Rhythm Section -->
       <div class="rhythm-section" id="rhythmSection" style="display:none;">
         <div class="section-label">Movement Rhythm</div>
         <div class="rhythm-wave" id="rhythmWave"></div>
       </div>
+
+      <!-- Camera Footer -->
       <div class="cam-footer">
         <div class="pose-status">
           <div class="status-dot" id="poseDot"></div>
@@ -353,78 +173,132 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
         <button class="stop-btn" onclick="stopSession()">&#9632; End Session</button>
       </div>
     </div>
+
+    <!-- Side Panel -->
     <div class="side-panel">
+      <!-- Primary Metric -->
       <div class="metric-card">
-        <div class="mc-header"><span id="pmLabel">Rate</span><span class="mc-chip" id="pmTarget">—</span></div>
-        <div class="mc-big"><span id="pmVal" class="color-neutral">—</span><span class="mc-unit" id="pmUnit"></span></div>
+        <div class="mc-header">
+          <span id="pmLabel">Rate</span>
+          <span class="mc-chip" id="pmTarget">—</span>
+        </div>
+        <div class="mc-big">
+          <span id="pmVal" class="color-neutral">—</span>
+          <span class="mc-unit" id="pmUnit"></span>
+        </div>
         <div class="mc-sub" id="pmStatus">Begin to measure</div>
         <div class="mc-range"><div class="mc-range-fill" id="pmBar" style="width:0%"></div></div>
       </div>
+
+      <!-- Action Count -->
       <div class="metric-card">
-        <div class="mc-header">Actions <span style="font-size:10px;color:var(--text-dim);font-family:var(--fm);">this session</span></div>
+        <div class="mc-header">
+          Actions <span style="font-size:10px;color:var(--text-dim);font-family:var(--fm);">this session</span>
+        </div>
         <div class="mc-big"><span id="compCount" class="color-neutral">0</span></div>
         <div class="mc-sub" id="compSub">No actions detected</div>
       </div>
+
+      <!-- Live Criteria Scores -->
       <div class="scores-mini">
         <div class="mc-header" style="margin-bottom:12px;">Live Scores</div>
-        <div id="liveCriteriaScores"><div style="font-family:var(--fm);font-size:11px;color:var(--text-dim);">—</div></div>
+        <div id="liveCriteriaScores">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--text-dim);">—</div>
+        </div>
       </div>
+
+      <!-- Live Feedback -->
       <div class="feedback-card">
         <div class="mc-header" style="margin-bottom:12px;">Live Feedback</div>
         <div class="feedback-list" id="feedbackList">
-          <div class="fb-item fb-warn"><span class="fb-icon">⚡</span><span>Enable camera to begin.</span></div>
+          <div class="fb-item fb-warn">
+            <span class="fb-icon">⚡</span>
+            <span>Enable camera to begin.</span>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
-<!-- RESULTS -->
+<!-- ═══════════════════════════════════════════════════════════
+     RESULTS PAGE
+     ═══════════════════════════════════════════════════════ -->
 <div id="page-results" class="page">
   <header class="app-header" style="position:relative;">
     <div class="logo">
-      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
       <span>Behavioural Skills Mentor</span>
     </div>
     <div class="header-badge">Session Complete</div>
   </header>
+
   <div class="results-container" style="padding-top:32px;">
     <div class="results-header">
       <div class="results-eyebrow" id="resultEyebrow">Session Report</div>
       <div class="results-title" id="result-title">Session Complete</div>
     </div>
+
+    <!-- Score Circle -->
     <div class="score-circle-wrap">
       <div class="score-circle">
         <svg viewBox="0 0 160 160">
           <circle cx="80" cy="80" r="70" fill="none" stroke="#30363d" stroke-width="10"/>
           <circle cx="80" cy="80" r="70" fill="none" id="score-arc"
-            stroke="var(--accent)" stroke-width="10" stroke-dasharray="439.8" stroke-dashoffset="439.8"
-            stroke-linecap="round" style="transition:stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)"/>
+            stroke="var(--accent)" stroke-width="10"
+            stroke-dasharray="439.8" stroke-dashoffset="439.8"
+            stroke-linecap="round"
+            style="transition:stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)"/>
         </svg>
         <div class="score-circle-num" id="final-score-num">0</div>
         <div class="score-circle-label">/ 100</div>
       </div>
     </div>
+
     <div class="score-grade" id="score-grade">—</div>
     <div class="score-grade-desc" id="score-grade-desc">Calculating...</div>
+
+    <!-- Breakdown Cards -->
     <div class="breakdown-grid" id="breakdown-grid"></div>
+
+    <!-- Source Reference -->
     <div class="source-ref" id="resultSourceRef" style="display:none;">
-      <div class="source-ref-icon"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      <div class="source-ref-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </div>
       <div class="source-ref-text">
         <div class="source-ref-label">Assessment criteria sourced from</div>
         <a class="source-ref-link" id="resultSourceLink" href="#" target="_blank" rel="noopener">—</a>
       </div>
     </div>
+
+    <!-- Improvement Tips -->
     <div class="tips-section">
       <div class="tips-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8"  x2="12"    y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
         Improvement Tips
       </div>
       <div id="tips-list"></div>
     </div>
+
+    <!-- Actions -->
     <div class="results-actions">
       <button class="btn-retry" onclick="retrySession()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.86"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="1 4 1 10 7 10"/>
+          <path d="M3.51 15a9 9 0 1 0 .49-4.86"/>
+        </svg>
         Try Again
       </button>
       <button class="btn-home" onclick="goHome()">Change Skill</button>
@@ -432,536 +306,26 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   </div>
 </div>
 
+<!-- Notification Toast -->
 <div class="notif" id="notif"></div>
 
-<script>
-/* ── HeuristicScorer ─────────────────────────────────────── */
-const HeuristicScorer=(()=>{
-  const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
-  const lerp=(a,b,t)=>a+(b-a)*Math.max(0,Math.min(1,t));
-  function scoreBySignal(dim,ps){
-    const s=ps[dim.pose_signal];
-    if(s===undefined||s===null)return 50;
-    switch(dim.pose_signal){
-      case 'wrist_center_x':return clamp(100-Math.abs(s-0.5)*300);
-      case 'wrist_center_y':return clamp(100-Math.abs(s-0.60)*280);
-      case 'arm_angle':
-        if(s>=165)return 100;if(s>=145)return lerp(60,100,(s-145)/20);
-        if(s>=120)return lerp(20,60,(s-120)/25);return clamp(s-90);
-      case 'elbow_angle':
-        if(s>=160)return 100;if(s>=80&&s<=100)return 95;
-        if(s>=60&&s<80)return lerp(50,95,(s-60)/20);
-        if(s>100&&s<160)return lerp(95,100,(s-100)/60);return clamp(s*0.4);
-      case 'body_lean':return clamp(100-Math.abs(s-15)*3.8);
-      case 'shoulder_level':return clamp(100-s*450);
-      case 'hand_height':return clamp(100-Math.abs(s-0.45)*260);
-      default:return 50;
-    }
-  }
-  function scoreRate(bpm,pm){
-    if(!pm||bpm<=0)return 0;
-    const{target_min:mn,target_max:mx}=pm,margin=(mx-mn)*0.6;
-    if(bpm>=mn&&bpm<=mx)return 100;
-    if(bpm>=mn-margin&&bpm<mn)return lerp(40,100,(bpm-(mn-margin))/margin);
-    if(bpm>mx&&bpm<=mx+margin)return lerp(40,100,((mx+margin)-bpm)/margin);
-    return 15;
-  }
-  function scoreConsistency(times){
-    if(times.length<4)return 0;
-    const iv=[];for(let i=1;i<times.length;i++)iv.push(times[i]-times[i-1]);
-    const avg=iv.reduce((a,b)=>a+b,0)/iv.length;
-    const variance=iv.reduce((s,v)=>s+(v-avg)**2,0)/iv.length;
-    return clamp((1-Math.sqrt(variance)/avg)*100);
-  }
-  function scoreAll(criteria,ps,bpm,actionTimes){
-    if(!criteria)return{total:0,breakdown:[]};
-    const breakdown=criteria.dimensions.map(dim=>{
-      const isRate=dim.id.includes('rate')||dim.id.includes('count');
-      const score=isRate?scoreRate(bpm,criteria.primary_metric):scoreBySignal(dim,ps);
-      const r=Math.round(score);
-      return{...dim,score:r,feedback:r>=75?dim.good_feedback:r>=40?dim.warn_feedback:dim.bad_feedback};
-    });
-    return{total:Math.round(breakdown.reduce((s,d)=>s+d.score*d.weight,0)),breakdown};
-  }
-  return{scoreAll,scoreRate,scoreConsistency,scoreBySignal};
-})();
-
-/* ── CRITERIA DB ─────────────────────────────────────────── */
-const CRITERIA_DB={version:"1.0",skills:[
-  {id:"cpr",name:"CPR / Chest Compressions",emoji:"🫀",tag:"Basic Life Support",
-   description:"Adult CPR chest compressions per AHA 2020 guidelines.",
-   source:{label:"AHA Guidelines 2020",url:"https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines"},
-   session_duration:30,
-   primary_metric:{label:"Compression Rate",unit:"BPM",target_min:100,target_max:120,target_display:"100–120 BPM"},
-   dimensions:[
-     {id:"hand_position",name:"Hand Position",weight:0.25,pose_signal:"wrist_center_x",target_description:"Heel of hand on center of lower sternum",good_feedback:"Good hand position on sternum",warn_feedback:"Adjust hands to chest midline",bad_feedback:"Move hands to center of chest"},
-     {id:"arm_alignment",name:"Arm Alignment",weight:0.25,pose_signal:"arm_angle",target_description:"Arms fully extended, elbows locked",good_feedback:"Arms straight — good force transfer",warn_feedback:"Straighten arms for better depth",bad_feedback:"Keep arms locked — do not bend elbows"},
-     {id:"compression_rate",name:"Compression Rate",weight:0.35,pose_signal:"wrist_center_y",target_description:"100–120 compressions per minute",good_feedback:"Good rhythm — maintain pace",warn_feedback:"Adjust rate toward 100–120 BPM",bad_feedback:"Rate outside 100–120 BPM target"},
-     {id:"consistency",name:"Consistency",weight:0.15,pose_signal:"shoulder_level",target_description:"Equal interval between every compression",good_feedback:"Very consistent rhythm",warn_feedback:"Aim for a steady metronome-like pace",bad_feedback:"High variability — stabilise your rhythm"}
-   ],
-   improvement_tips:["Practise to the beat of 'Stayin Alive' (~100 BPM) to internalise the correct speed.","Place the heel of your dominant hand on the lower sternum, stack the other hand on top, interlace fingers.","Lock both elbows and position shoulders directly above hands — use body weight, not arm strength.","AHA guideline: 100–120 BPM, 5–6 cm depth, allow full chest recoil between compressions."]},
-  {id:"surgical_scrub",name:"Surgical Hand Scrub",emoji:"🧼",tag:"Aseptic Technique",
-   description:"Standardised surgical hand scrub per WHO surgical safety guidelines.",
-   source:{label:"WHO Surgical Safety Guidelines",url:"https://www.who.int/publications/i/item/9789241598552"},
-   session_duration:60,
-   primary_metric:{label:"Scrub Duration",unit:"sec",target_min:120,target_max:180,target_display:"2–3 minutes"},
-   dimensions:[
-     {id:"hand_elevation",name:"Hand Elevation",weight:0.30,pose_signal:"hand_height",target_description:"Hands held higher than elbows throughout",good_feedback:"Good hand elevation above elbows",warn_feedback:"Raise hands above elbow level",bad_feedback:"Hands must remain above elbows always"},
-     {id:"elbow_position",name:"Elbow Angle",weight:0.25,pose_signal:"elbow_angle",target_description:"Elbows bent at ~90°, forearms vertical",good_feedback:"Correct elbow angle maintained",warn_feedback:"Adjust elbow angle toward 90°",bad_feedback:"Elbows should be at roughly 90°"},
-     {id:"body_posture",name:"Body Posture",weight:0.25,pose_signal:"body_lean",target_description:"Upright posture, slight forward lean",good_feedback:"Good upright scrub posture",warn_feedback:"Stand more upright during scrub",bad_feedback:"Maintain upright posture throughout"},
-     {id:"symmetry",name:"Bilateral Symmetry",weight:0.20,pose_signal:"shoulder_level",target_description:"Both hands scrubbed equally",good_feedback:"Symmetric bilateral technique",warn_feedback:"Ensure both hands scrubbed equally",bad_feedback:"Both sides must be scrubbed evenly"}
-   ],
-   improvement_tips:["Keep hands above elbow level at all times — water and contaminants flow downward.","Scrub all surfaces: palm, back of hand, fingers, interdigital spaces, and wrists.","WHO recommends at least 2 minutes of surgical scrub before donning sterile gloves.","Do not touch the sink or any non-sterile surface after scrubbing begins."]},
-  {id:"patient_transfer",name:"Patient Transfer",emoji:"🛏️",tag:"Manual Handling",
-   description:"Safe patient transfer and manual handling technique.",
-   source:{label:"NHS Manual Handling Guidelines",url:"https://www.nhs.uk/conditions/social-care-and-support-guide/practical-tips-if-you-care-for-someone/moving-and-handling/"},
-   session_duration:30,
-   primary_metric:{label:"Movement Rate",unit:"moves/min",target_min:4,target_max:10,target_display:"4–10 moves/min"},
-   dimensions:[
-     {id:"back_posture",name:"Back Posture",weight:0.35,pose_signal:"body_lean",target_description:"Straight back, bend at knees not waist",good_feedback:"Good back posture maintained",warn_feedback:"Keep back straighter — bend at knees",bad_feedback:"Avoid bending at the waist — risk of injury"},
-     {id:"shoulder_alignment",name:"Shoulder Alignment",weight:0.25,pose_signal:"shoulder_level",target_description:"Shoulders level and square to patient",good_feedback:"Shoulders aligned correctly",warn_feedback:"Keep shoulders level and square",bad_feedback:"Align shoulders to avoid asymmetric load"},
-     {id:"arm_control",name:"Arm Control",weight:0.25,pose_signal:"arm_angle",target_description:"Controlled arm movement",good_feedback:"Smooth and controlled arm movement",warn_feedback:"Use more controlled arm movements",bad_feedback:"Jerky movements increase injury risk"},
-     {id:"centre_of_gravity",name:"Centre of Gravity",weight:0.15,pose_signal:"wrist_center_x",target_description:"Weight centred, stable base",good_feedback:"Stable centre of gravity",warn_feedback:"Redistribute weight for better stability",bad_feedback:"Unstable — widen stance and centre weight"}
-   ],
-   improvement_tips:["Always bend at the knees and hips, not the waist — keep the spine in neutral alignment.","Establish a wide, stable base of support before initiating any transfer.","Communicate clearly with the patient before and during every movement.","Use assistive equipment (slide sheets, hoists) whenever available rather than manual force."]},
-  
- ]};
-
-/* ── APP STATE ───────────────────────────────────────────── */
-let ACTIVE_CRITERIA=null;
-const S={pose:null,camera:null,stream:null,running:false,sessionStart:null,timerInterval:null,
-  wristYHistory:[],lastPeakTime:null,compressionTimes:[],compressionCount:0,currentBPM:0,
-  dimensionScoreHistory:{},frameCount:0,poseDetected:false,latestPoseSignals:{}};
-const RHYTHM_BARS=32;let rhythmData=new Array(RHYTHM_BARS).fill(0);
-let simInterval=null,lastFeedbackUpdate=0;
-
-/* ── GHOST OVERLAY ───────────────────────────────────────────
-   Draws a dashed "ideal position" skeleton over the canvas.
-   Called when compressionCount === 0 (before first action).
-   Hides automatically after first detected action.
-   ─────────────────────────────────────────────────────────── */
-function drawGhostPose(ctx, W, H) {
-  const ghost = {
-   lSho:[0.37,0.38], rSho:[0.63,0.38],
-lElb:[0.36,0.55], rElb:[0.64,0.55],
-lWri:[0.45,0.70], rWri:[0.55,0.70]
-  };
-  const p = k => [ghost[k][0]*W, ghost[k][1]*H];
-
-  ctx.save();
-
-  // Pulsing opacity effect
-const pulse = 0.82 + 0.15 * Math.sin(Date.now() / 1800);
-
-  // Skeleton lines — dashed white-blue
-  ctx.strokeStyle = `rgba(163,230,53,${pulse})`;
-ctx.lineWidth = 4.5;
-  ctx.setLineDash([10, 7]);
-  ctx.shadowColor = 'rgba(132,204,22,0.8)';
-ctx.shadowBlur = 18;
-  ctx.lineCap = 'round';
-
-  // Draw arm chain: lWri → lElb → lSho → rSho → rElb → rWri
-  ctx.beginPath();
-  ctx.moveTo(...p('lWri'));
-  ctx.lineTo(...p('lElb'));
-  ctx.lineTo(...p('lSho'));
-  ctx.lineTo(...p('rSho'));
-  ctx.lineTo(...p('rElb'));
-  ctx.lineTo(...p('rWri'));
-  ctx.stroke();
-
-  // Target zone circle between wrists
-  const mx = (p('lWri')[0]+p('rWri')[0])/2;
-  const my = (p('lWri')[1]+p('rWri')[1])/2;
-  ctx.setLineDash([6,5]);
-  ctx.beginPath();
-  ctx.arc(mx, my, W*0.055, 0, Math.PI*2);
-  ctx.fillStyle = `rgba(132,204,22,${pulse*0.22})`;
-ctx.fill();
-ctx.strokeStyle = `rgba(163,230,53,${pulse})`;
-  ctx.stroke();
-
-  // Dots at key joints
-  ctx.setLineDash([]);
-  ctx.shadowBlur = 0;
-  ['lSho','rSho','lElb','rElb','lWri','rWri'].forEach(k => {
-    const isWrist = k.includes('Wri');
-    ctx.beginPath();
-    ctx.arc(...p(k), isWrist?7:5, 0, Math.PI*2);
-    ctx.fillStyle = isWrist
-  ? `rgba(250,204,21,${pulse})`
-  : `rgba(163,230,53,${pulse})`;
-    ctx.fill();
-  });
-
-  // Hint label
-  ctx.setLineDash([]);
-  ctx.shadowBlur = 0;
-  ctx.font = "bold 13px 'DM Sans', sans-serif";
-  ctx.fillStyle = `rgba(217,249,157,${pulse})`;
-  ctx.textAlign = 'center';
-ctx.fillText('Align with guide — then begin', W/2, H * 0.18);
-  ctx.restore();
-}
-
-/* ── SKILL GRID ──────────────────────────────────────────── */
-function buildSkillGrid(){
-  document.getElementById('skillGrid').innerHTML=CRITERIA_DB.skills.map(sk=>`
-    <div class="skill-card" data-id="${sk.id}" onclick="selectSkill('${sk.id}')">
-      <div class="skill-card-icon">${sk.emoji}</div>
-      <div><div class="skill-card-name">${sk.name}</div><div class="skill-card-tag">${sk.tag}</div></div>
-    </div>`).join('');
-}
-
-function selectSkill(id){
-  const c=CRITERIA_DB.skills.find(s=>s.id===id);if(!c)return;
-  ACTIVE_CRITERIA=c;
-  document.querySelectorAll('.skill-card').forEach(el=>el.classList.toggle('selected',el.dataset.id===id));
-  document.getElementById('sourceChip').href=c.source.url;
-  document.getElementById('sourceChipLabel').textContent=c.source.label;
-  document.getElementById('sourceChipWrap').style.display='block';
-  document.getElementById('criteriaPreview').innerHTML=c.dimensions
-    .map(d=>`<span class="criteria-tag">${d.name} (${Math.round(d.weight*100)}%)</span>`).join('');
-  document.getElementById('startBtn').classList.add('ready');
-}
-
-/* ── NAVIGATION ──────────────────────────────────────────── */
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');window.scrollTo(0,0)}
-function goHome(){cleanup();showPage('home')}
-
-function startPractice(){
-  if(!ACTIVE_CRITERIA)return;
-  S.dimensionScoreHistory={};
-  ACTIVE_CRITERIA.dimensions.forEach(d=>{S.dimensionScoreHistory[d.id]=[]});
-  document.getElementById('skillBadgePractice').textContent=ACTIVE_CRITERIA.name;
-  document.getElementById('pmLabel').textContent=ACTIVE_CRITERIA.primary_metric.label;
-  document.getElementById('pmTarget').textContent=ACTIVE_CRITERIA.primary_metric.target_display;
-  document.getElementById('pmUnit').textContent=ACTIVE_CRITERIA.primary_metric.unit;
-  document.getElementById('timerDisp').textContent='0:'+String(ACTIVE_CRITERIA.session_duration).padStart(2,'0');
-  document.getElementById('liveCriteriaScores').innerHTML=ACTIVE_CRITERIA.dimensions.map(d=>`
-    <div class="score-row-mini">
-      <span class="score-name-mini">${d.name}</span>
-      <div class="score-bar-mini"><div class="score-bar-fill" id="sb-${d.id}" style="width:0%"></div></div>
-      <span class="score-pct-mini" id="sv-${d.id}">0%</span>
-    </div>`).join('');
-  showPage('practice');initRhythmBars();showCamState('stateIdle');
-  document.getElementById('session-status').textContent='Ready';
-}
-
-/* ── CAMERA ──────────────────────────────────────────────── */
-async function requestCamera(){
-  showCamState('stateRequesting');
-  document.getElementById('session-status').textContent='Requesting Camera...';
-  try{
-    S.stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'},audio:false});
-    const video=document.getElementById('videoEl');
-    video.srcObject=S.stream;video.style.display='block';
-    document.getElementById('poseCanvas').style.display='block';
-    await new Promise(r=>{video.onloadedmetadata=r});await video.play();
-    hideCamStates();
-    document.getElementById('liveOverlay').style.display='block';
-    document.getElementById('rhythmSection').style.display='block';
-    document.getElementById('session-status').textContent='Loading AI Model...';
-    await initPose();
-    document.getElementById('session-status').textContent='Session Active';
-    startTimer();S.running=true;notify('Session started!');
-  }catch(err){showCamState('stateDenied');document.getElementById('session-status').textContent='Camera Error'}
-}
-function showCamState(id){['stateIdle','stateRequesting','stateDenied'].forEach(s=>{document.getElementById(s).style.display=(s===id)?'flex':'none'})}
-function hideCamStates(){['stateIdle','stateRequesting','stateDenied'].forEach(s=>{document.getElementById(s).style.display='none'})}
-
-async function initPose(){
-  return new Promise(resolve=>{
-    const t=setTimeout(()=>{startSimMode();resolve()},8000);
-    if(typeof Pose==='undefined'){clearTimeout(t);startSimMode();resolve();return}
-    const p=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${f}`});
-    p.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
-    p.onResults(onPoseResults);S.pose=p;
-    if(typeof Camera!=='undefined'){
-      const cam=new Camera(document.getElementById('videoEl'),{
-        onFrame:async()=>{if(S.pose&&S.running)await S.pose.send({image:document.getElementById('videoEl')})},
-        width:1280,height:720});
-      S.camera=cam;cam.start().then(()=>{clearTimeout(t);resolve()}).catch(()=>{clearTimeout(t);startSimMode();resolve()});
-    }else{clearTimeout(t);startSimMode();resolve()}
-  });
-}
-
-/* ── SIMULATION MODE ─────────────────────────────────────── */
-function startSimMode(){
-  if(simInterval)return; // prevent double-start
-  document.getElementById('session-status').textContent='Demo Mode';
-  notify('Running in demo mode.');setPoseStatus(true);
-  simInterval=setInterval(()=>{
-    if(!S.running||!ACTIVE_CRITERIA)return;
-    const now=Date.now(),pm=ACTIVE_CRITERIA.primary_metric;
-    const targetBPM=(pm.target_min+pm.target_max)/2+Math.sin(now/9000)*6+(Math.random()-.5)*4;
-    if(!S.lastPeakTime||(now-S.lastPeakTime)>=60000/targetBPM*0.92)processWristMovement(0.58,now);
-    const ps={wrist_center_x:0.50+Math.sin(now/3000)*0.05+(Math.random()-.5)*0.04,
-      wrist_center_y:0.60+Math.sin(now/4000)*0.04,
-      arm_angle:162+Math.sin(now/5000)*12+(Math.random()-.5)*8,
-      elbow_angle:158+Math.cos(now/4500)*10,body_lean:15+Math.sin(now/7000)*6,
-      shoulder_level:Math.abs(Math.sin(now/6000))*0.05,hand_height:0.45+Math.sin(now/3500)*0.06};
-    S.latestPoseSignals=ps;S.frameCount++;
-    const{breakdown}=HeuristicScorer.scoreAll(ACTIVE_CRITERIA,ps,S.currentBPM,S.compressionTimes);
-    breakdown.forEach(d=>{if(!S.dimensionScoreHistory[d.id])S.dimensionScoreHistory[d.id]=[];S.dimensionScoreHistory[d.id].push(d.score)});
-    drawSimSkeleton();updateLiveScores();generateFeedback(breakdown);
-  },90);
-}
-
-/* ── POSE RESULTS (real camera) ──────────────────────────── */
-function onPoseResults(results){
-  if(!S.running)return;
-  const canvas=document.getElementById('poseCanvas'),ctx=canvas.getContext('2d');
-  canvas.width=results.image.width;canvas.height=results.image.height;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // Ghost: show when no action yet, hide after first action
-  if(S.compressionCount===0){
-    drawGhostPose(ctx,canvas.width,canvas.height);
-  }
-
-  if(!results.poseLandmarks||!results.poseLandmarks.length){setPoseStatus(false);return}
-  setPoseStatus(true);S.frameCount++;
-  const lm=results.poseLandmarks;
-  if(typeof drawConnectors!=='undefined'){
-    // Colour skeleton green once user starts, blue before
-    const userColor=S.compressionCount>0?'rgba(5,150,105,0.85)':'rgba(59,130,246,0.7)';
-    drawConnectors(ctx,lm,POSE_CONNECTIONS,{color:userColor,lineWidth:3});
-    drawLandmarks(ctx,lm,{color:'rgba(255,255,255,0.9)',fillColor:userColor,lineWidth:2,radius:4});
-  }
-  const angle=(a,b,c)=>{const ab=[b.x-a.x,b.y-a.y],cb=[b.x-c.x,b.y-c.y],d=ab[0]*cb[0]+ab[1]*cb[1],m=Math.sqrt(ab[0]**2+ab[1]**2)*Math.sqrt(cb[0]**2+cb[1]**2);return m===0?0:Math.acos(Math.min(1,Math.max(-1,d/m)))*180/Math.PI};
-  const ps={wrist_center_x:(lm[15].x+lm[16].x)/2,wrist_center_y:(lm[15].y+lm[16].y)/2,
-    arm_angle:(angle(lm[11],lm[13],lm[15])+angle(lm[12],lm[14],lm[16]))/2,
-    elbow_angle:(angle(lm[11],lm[13],lm[15])+angle(lm[12],lm[14],lm[16]))/2,
-    body_lean:Math.abs(((lm[11].x+lm[12].x)/2-(lm[23].x+lm[24].x)/2))*90,
-    shoulder_level:Math.abs(lm[11].y-lm[12].y),
-    hand_height:Math.abs((lm[15].y+lm[16].y)/2-(lm[11].y+lm[12].y)/2)};
-  S.latestPoseSignals=ps;
-  const{breakdown}=HeuristicScorer.scoreAll(ACTIVE_CRITERIA,ps,S.currentBPM,S.compressionTimes);
-  breakdown.forEach(d=>{if(!S.dimensionScoreHistory[d.id])S.dimensionScoreHistory[d.id]=[];S.dimensionScoreHistory[d.id].push(d.score)});
-  processWristMovement((lm[15].y+lm[16].y)/2,Date.now());
-  updateLiveScores();generateFeedback(breakdown);
-}
-
-/* ── RHYTHM & BPM ────────────────────────────────────────── */
-function processWristMovement(wristY,now){
-  S.wristYHistory.push({y:wristY,t:now});if(S.wristYHistory.length>20)S.wristYHistory.shift();
-  if(S.wristYHistory.length<6)return;
-  const recent=S.wristYHistory.slice(-5),old=S.wristYHistory.slice(-10,-5);
-  if(old.length<5)return;
-  const rA=recent.reduce((s,v)=>s+v.y,0)/recent.length,oA=old.reduce((s,v)=>s+v.y,0)/old.length;
-if(rA-oA>0.011&&(!S.lastPeakTime||now-S.lastPeakTime>280)){
-    S.lastPeakTime=now;S.compressionCount++;S.compressionTimes.push(now);
-    if(S.compressionTimes.length>30)S.compressionTimes.shift();
-    document.getElementById('compCount').textContent=S.compressionCount;
-    document.getElementById('compSub').textContent=`${S.compressionCount} action${S.compressionCount!==1?'s':''} detected`;
-    addRhythmSpike();calcBPM();
-  }
-}
-function calcBPM(){
-  const t=S.compressionTimes;if(t.length<3)return;
-  const last=t.slice(-12),iv=[];for(let i=1;i<last.length;i++)iv.push(last[i]-last[i-1]);
-  S.currentBPM=Math.max(0,Math.min(240,Math.round(60000/(iv.reduce((a,b)=>a+b,0)/iv.length))));
-  updatePMDisplay(S.currentBPM);
-}
-function updatePMDisplay(bpm){
-  const el=document.getElementById('pmVal'),st=document.getElementById('pmStatus'),bar=document.getElementById('pmBar');
-  if(!ACTIVE_CRITERIA)return;
-  const{target_min:mn,target_max:mx}=ACTIVE_CRITERIA.primary_metric;
-  el.textContent=bpm;
-  bar.style.width=Math.max(0,Math.min(100,((bpm-(mn-20))/((mx+20)-(mn-20)))*100))+'%';
-  if(bpm<mn-20){el.className='color-bad';st.textContent='Too slow';bar.style.background='var(--bad)'}
-  else if(bpm<mn){el.className='color-warn';st.textContent='Slightly slow — speed up';bar.style.background='var(--warn)'}
-  else if(bpm<=mx){el.className='color-good';st.textContent='Perfect — maintain this pace';bar.style.background='var(--good)'}
-  else if(bpm<=mx+20){el.className='color-warn';st.textContent='Slightly fast — ease off';bar.style.background='var(--warn)'}
-  else{el.className='color-bad';st.textContent='Too fast';bar.style.background='var(--bad)'}
-}
-
-/* ── FEEDBACK & SCORES ───────────────────────────────────── */
-function generateFeedback(breakdown){
-  const now=Date.now();if(now-lastFeedbackUpdate<1400)return;lastFeedbackUpdate=now;
-  const msgs=S.compressionCount===0
-    ?[{cls:'fb-warn',icon:'⚡',text:'Align with the guide outline — then begin'}]
-    :breakdown.map(d=>({cls:d.score>=75?'fb-good':d.score>=40?'fb-warn':'fb-bad',icon:d.score>=75?'✓':d.score>=40?'🟡':'🔴',text:d.feedback}));
-  if(!S.poseDetected&&S.compressionCount>0)msgs.push({cls:'fb-warn',icon:'👁',text:'Move into frame for pose analysis'});
-  document.getElementById('feedbackList').innerHTML=msgs.map(m=>`<div class="fb-item ${m.cls}"><span class="fb-icon">${m.icon}</span><span>${m.text}</span></div>`).join('');
-}
-function updateLiveScores(){
-  if(!ACTIVE_CRITERIA)return;
-  ACTIVE_CRITERIA.dimensions.forEach(d=>{
-    const h=S.dimensionScoreHistory[d.id]||[],recent=h.slice(-20);
-    const avg=recent.length?Math.round(recent.reduce((a,b)=>a+b,0)/recent.length):0;
-    const sb=document.getElementById('sb-'+d.id),sv=document.getElementById('sv-'+d.id);
-    if(sb){sb.style.width=avg+'%';sb.style.background=avg>=75?'var(--good)':avg>=50?'var(--warn)':'var(--bad)'}
-    if(sv)sv.textContent=avg+'%';
-  });
-}
-
-/* ── SIMULATION SKELETON ─────────────────────────────────── */
-function drawSimSkeleton(){
-  const canvas=document.getElementById('poseCanvas'),video=document.getElementById('videoEl');
-  canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;
-  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
-  const W=canvas.width,H=canvas.height,b=Math.sin(Date.now()/290)*0.028;
-
-  // ── GHOST: show before first action, in sim mode too ──
-  if(S.compressionCount===0){
-    drawGhostPose(ctx,W,H);
-  }
-
-  const pts={nose:[.50,.10],lSho:[.37,.28],rSho:[.63,.28],lElb:[.34,.44],rElb:[.66,.44],
-    lWri:[.43,.56+b],rWri:[.57,.56+b],lHip:[.42,.63],rHip:[.58,.63],
-    lKne:[.41,.78],rKne:[.59,.78],lAnk:[.42,.92],rAnk:[.58,.92]};
-  const p=k=>[pts[k][0]*W,pts[k][1]*H];
-  const conns=[['lSho','rSho'],['lSho','lElb'],['lElb','lWri'],['rSho','rElb'],['rElb','rWri'],
-    ['lSho','lHip'],['rSho','rHip'],['lHip','rHip'],['lHip','lKne'],['lKne','lAnk'],['rHip','rKne'],['rKne','rAnk']];
-  ctx.lineWidth=2.5;ctx.lineCap='round';
-  conns.forEach(([a,bg])=>{
-    const isArm=a.includes('Elb')||a.includes('Wri')||bg.includes('Elb')||bg.includes('Wri');
-    ctx.strokeStyle=isArm?'rgba(59,130,246,0.85)':'rgba(59,130,246,0.35)';
-    ctx.beginPath();ctx.moveTo(...p(a));ctx.lineTo(...p(bg));ctx.stroke();
-  });
-  Object.keys(pts).forEach(k=>{
-    const iw=k.includes('Wri');ctx.fillStyle=iw?'#d97706':'rgba(59,130,246,0.9)';
-    ctx.beginPath();ctx.arc(...p(k),iw?6:4,0,Math.PI*2);ctx.fill();
-    if(iw){ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=1.5;ctx.stroke()}
-  });
-}
-
-/* ── TIMER ───────────────────────────────────────────────── */
-function startTimer(){
-  const dur=ACTIVE_CRITERIA?.session_duration||30;S.sessionStart=Date.now();
-  const disp=document.getElementById('timerDisp');
-  S.timerInterval=setInterval(()=>{
-    const rem=Math.max(0,dur-(Date.now()-S.sessionStart)/1000),s=Math.ceil(rem);
-    disp.textContent='0:'+String(s).padStart(2,'0');
-    if(rem<=5)disp.classList.add('urgent');
-    else if(rem<=10)disp.style.color='var(--warn)';
-    else{disp.classList.remove('urgent');disp.style.color='var(--text)'}
-    if(rem<=0){clearInterval(S.timerInterval);S.running=false;buildResults()}
-  },200);
-}
-function stopSession(){clearInterval(S.timerInterval);S.running=false;buildResults()}
-
-/* ── RESULTS ─────────────────────────────────────────────── */
-function buildResults(){
-  const criteria=ACTIVE_CRITERIA;if(!criteria){showPage('results');return}
-  const finalBreakdown=criteria.dimensions.map(d=>{
-    const h=S.dimensionScoreHistory[d.id]||[];
-    const avg=h.length?Math.round(h.reduce((a,b)=>a+b,0)/h.length):30;
-    return{...d,finalScore:avg};
-  });
-  const final=Math.round(finalBreakdown.reduce((s,d)=>s+d.finalScore*d.weight,0));
-  const consistency=HeuristicScorer.scoreConsistency(S.compressionTimes);
-  cleanup();
-  document.getElementById('resultEyebrow').textContent=`Session Report — ${criteria.name}`;
-  const arc=document.getElementById('score-arc');
-  const col=final>=80?'var(--good)':final>=60?'var(--warn)':'var(--bad)';
-  setTimeout(()=>{arc.style.strokeDashoffset=439.8-(final/100)*439.8;arc.style.stroke=col},300);
-  const numEl=document.getElementById('final-score-num');numEl.style.color=col;
-  let n=0;const inc=setInterval(()=>{n=Math.min(final,n+2);numEl.textContent=n;if(n>=final)clearInterval(inc)},28);
-  const grades=[[90,'Excellent','Outstanding technique. Well prepared for real-world application.'],[80,'Good','Strong performance with minor areas to improve.'],[70,'Proficient','Solid technique. Focus on the flagged areas.'],[60,'Developing','Making progress — continue practising fundamentals.'],[0,'Needs Work','Review clinical guidelines and practise again.']];
-  const[,grade,desc]=grades.find(([min])=>final>=min);
-  document.getElementById('result-title').textContent=grade+' Performance';
-  document.getElementById('score-grade').textContent=grade;
-  document.getElementById('score-grade').style.color=col;
-  document.getElementById('score-grade-desc').textContent=desc;
-  document.getElementById('breakdown-grid').innerHTML=finalBreakdown.map(d=>{
-    const s=d.finalScore,c=s>=75?'var(--good)':s>=50?'var(--warn)':'var(--bad)';
-    const fb=s>=75?d.good_feedback:s>=40?d.warn_feedback:d.bad_feedback;
-    return`<div class="breakdown-card">
-      <div class="bc-header"><span class="bc-name">${d.name}</span><span class="bc-weight">${Math.round(d.weight*100)}%</span></div>
-      <div class="bc-score" style="color:${c}">${s}/100</div>
-      <div class="bc-bar"><div class="bc-bar-fill" id="bb-${d.id}" style="width:0%;background:${c}"></div></div>
-      <div class="bc-feedback">${fb}</div>
-    </div>`;
-  }).join('');
-  setTimeout(()=>{finalBreakdown.forEach(d=>{const el=document.getElementById('bb-'+d.id);if(el)el.style.width=d.finalScore+'%'})},500);
-  if(criteria.source){
-    document.getElementById('resultSourceRef').style.display='flex';
-    document.getElementById('resultSourceLink').href=criteria.source.url;
-    document.getElementById('resultSourceLink').textContent=criteria.source.label+' ↗';
-  }
-  const tips=[...(criteria.improvement_tips||[])];
-  tips.push(`You recorded ${S.compressionCount} actions. Consistency score: ${Math.round(consistency)}%.`);
-  document.getElementById('tips-list').innerHTML=tips.map((t,i)=>`<div class="tip-item"><span class="tip-num">0${i+1}</span><span>${t}</span></div>`).join('');
-  showPage('results');
-}
-
-/* ── RETRY / CLEANUP ─────────────────────────────────────── */
-function retrySession(){
-  Object.assign(S,{pose:null,camera:null,stream:null,running:false,sessionStart:null,timerInterval:null,
-    wristYHistory:[],lastPeakTime:null,compressionTimes:[],compressionCount:0,
-    currentBPM:0,dimensionScoreHistory:{},frameCount:0,poseDetected:false,latestPoseSignals:{}});
-  if(ACTIVE_CRITERIA)ACTIVE_CRITERIA.dimensions.forEach(d=>{S.dimensionScoreHistory[d.id]=[]});
-  rhythmData=new Array(RHYTHM_BARS).fill(0);lastFeedbackUpdate=0;
-  document.getElementById('videoEl').style.display='none';
-  document.getElementById('poseCanvas').style.display='none';
-  document.getElementById('liveOverlay').style.display='none';
-  document.getElementById('rhythmSection').style.display='none';
-  document.getElementById('pmVal').textContent='—';document.getElementById('pmVal').className='color-neutral';
-  document.getElementById('pmStatus').textContent='Begin to measure';
-  document.getElementById('pmBar').style.width='0%';
-  document.getElementById('compCount').textContent='0';document.getElementById('compSub').textContent='No actions detected';
-  document.getElementById('poseDot').classList.remove('on');document.getElementById('poseLabel').textContent='Pose not detected';
-  document.getElementById('feedbackList').innerHTML='<div class="fb-item fb-warn"><span class="fb-icon">⚡</span><span>Enable camera to begin.</span></div>';
-  document.getElementById('session-status').textContent='Ready';
-  showPage('practice');initRhythmBars();showCamState('stateIdle');
-}
-function cleanup(){
-  S.running=false;
-  if(simInterval){clearInterval(simInterval);simInterval=null}
-  if(S.timerInterval){clearInterval(S.timerInterval);S.timerInterval=null}
-  if(S.camera){try{S.camera.stop()}catch(e){}S.camera=null}
-  if(S.stream){S.stream.getTracks().forEach(t=>t.stop());S.stream=null}
-  if(S.pose){try{S.pose.close()}catch(e){}S.pose=null}
-}
-
-/* ── RHYTHM WAVE ─────────────────────────────────────────── */
-function initRhythmBars(){
-  const wave=document.getElementById('rhythmWave');wave.innerHTML='';
-  rhythmData=new Array(RHYTHM_BARS).fill(0);
-  for(let i=0;i<RHYTHM_BARS;i++){const b=document.createElement('div');b.className='r-bar';b.style.height='4px';wave.appendChild(b)}
-}
-function addRhythmSpike(){
-  rhythmData.push(100);if(rhythmData.length>RHYTHM_BARS)rhythmData.shift();renderRhythm();
-  setTimeout(()=>{if(rhythmData.length)rhythmData[rhythmData.length-1]=55;renderRhythm()},80);
-  setTimeout(()=>{if(rhythmData.length)rhythmData[rhythmData.length-1]=22;renderRhythm()},200);
-  setTimeout(()=>{if(rhythmData.length)rhythmData[rhythmData.length-1]=7;renderRhythm()},400);
-}
-function renderRhythm(){
-  document.querySelectorAll('.r-bar').forEach((bar,i)=>{
-    const h=rhythmData[i]||0;bar.style.height=Math.max(4,h*0.35)+'px';
-    bar.style.background=h>50?'var(--accent)':h>20?'rgba(59,130,246,0.4)':'var(--surface3)';
-  });
-}
-
-/* ── POSE STATUS & NOTIFY ────────────────────────────────── */
-function setPoseStatus(on){
-  S.poseDetected=on;
-  document.getElementById('poseDot').classList.toggle('on',on);
-  document.getElementById('poseLabel').textContent=on?'Pose detected':'Move into frame';
-  document.getElementById('poseLabel').style.color=on?'var(--good)':'var(--warn)';
-  const txt=document.getElementById('poseStatusTxt');
-  if(txt){txt.textContent=on?'DETECTED':'SEARCHING';txt.style.color=on?'var(--good)':'var(--warn)'}
-}
-let notifTimer=null;
-function notify(msg){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(notifTimer);notifTimer=setTimeout(()=>el.classList.remove('show'),3200)}
-
-/* ── EMERGENCY SIM KEY (fixed: won't fire on input fields) ── */
-document.addEventListener('keydown',e=>{
-  if((e.key==='S'||e.key==='s')&&S.running&&!e.target.matches('input,textarea,select')){
-    startSimMode();
-    notify('Demo mode activated');
-  }
-});
-
-buildSkillGrid();
-</script>
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS — load order matters
+     1. Data / scoring (no DOM dependency)
+     2. Session logic
+     3. Camera / pose
+     4. App controller (calls buildSkillGrid on load)
+     5. MediaPipe CDN libraries
+     ═══════════════════════════════════════════════════════ -->
+<script src="js/criteria-db.js"></script>
+<script src="js/scorer.js"></script>
+<script src="js/session.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/app.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
+
 </body>
 </html>
