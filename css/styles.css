@@ -48,8 +48,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
 }
 
 .logo-icon img {
-  width: 100px;
-  height: 100px;
+  width: 100%;  /* جعلنا عرض الصورة يأخذ 100% من مساحة الحاوية الجديدة */
+  height: 100%; /* جعلنا ارتفاع الصورة يأخذ 100% من مساحة الحاوية الجديدة */
   object-fit: contain;
 }
 
