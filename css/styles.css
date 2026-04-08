@@ -38,8 +38,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
 
 .logo-icon {
-  width: 80px;
-  height: 80px;
+  width: 44px;
+  height: 44px;
   background: transparent;
   border-radius: 0;
   display: flex;
@@ -48,8 +48,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
 }
 
 .logo-icon img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
 }
 
