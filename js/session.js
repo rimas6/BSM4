@@ -79,8 +79,11 @@ function processWristMovement(wristY, now) {
   const rA = recent.reduce((s, v) => s + v.y, 0) / recent.length;
   const oA = old.reduce((s, v)    => s + v.y, 0) / old.length;
 
-  if (rA - oA > 0.011 && (!S.lastPeakTime || now - S.lastPeakTime > 280)) {
-    S.lastPeakTime = now;
+// 🔴 FIX: رفع عتبة الكشف لتجنب الكشف الوهمي
+  // القديم كان: rA - oA > 0.011
+  // الجديد:
+  if (rA - oA > 0.025 && (!S.lastPeakTime || now - S.lastPeakTime > 350)) {
+     S.lastPeakTime = now;
     S.compressionCount++;
     S.compressionTimes.push(now);
     if (S.compressionTimes.length > 30) S.compressionTimes.shift();
@@ -99,8 +102,17 @@ function calcBPM() {
   const last = t.slice(-12);
   const iv   = [];
   for (let i = 1; i < last.length; i++) iv.push(last[i] - last[i - 1]);
-  S.currentBPM = Math.max(0, Math.min(240, Math.round(60000 / (iv.reduce((a, b) => a + b, 0) / iv.length))));
-  updatePMDisplay(S.currentBPM);
+   const avgInterval = iv.reduce((a, b) => a + b, 0) / iv.length;
+  
+  // 🔴 FIX: تجاهل فترات غير منطقية (أقل من 300ms = أكثر من 200 BPM حقيقي)
+  if (avgInterval < 300) return;
+
+   S.currentBPM = Math.max(0, Math.min(200, Math.round(60000 / avgInterval)));
+   updatePMDisplay(S.currentBPM);
+   
+   //:الشرط قبل التعديل
+  //S.currentBPM = Math.max(0, Math.min(240, Math.round(60000 / (iv.reduce((a, b) => a + b, 0) / iv.length))));
+  //updatePMDisplay(S.currentBPM);
 }
 
 function updatePMDisplay(bpm) {
@@ -126,8 +138,8 @@ function generateFeedback(breakdown) {
   if (now - lastFeedbackUpdate < 1400) return;
   lastFeedbackUpdate = now;
 
-  const msgs = S.compressionCount === 0
-    ? [{ cls: 'fb-warn', icon: '⚡', text: 'Align with the guide outline — then begin' }]
+ const msgs = S.compressionCount < 3
+  ? [{ cls: 'fb-warn', icon: '⚡', text: 'Align with the guide outline — then begin' }]
     : breakdown.map(d => ({
         cls:  d.score >= 75 ? 'fb-good' : d.score >= 40 ? 'fb-warn' : 'fb-bad',
         icon: d.score >= 75 ? '✓'       : d.score >= 40 ? '🟡'      : '🔴',
@@ -144,12 +156,17 @@ function generateFeedback(breakdown) {
 
 function updateLiveScores() {
   if (!ACTIVE_CRITERIA) return;
-  ACTIVE_CRITERIA.dimensions.forEach(d => {
+ ACTIVE_CRITERIA.dimensions.forEach(d => {
     const h      = S.dimensionScoreHistory[d.id] || [];
     const recent = h.slice(-20);
-    const avg    = recent.length ? Math.round(recent.reduce((a, b) => a + b, 0) / recent.length) : 0;
-    const sb     = document.getElementById('sb-' + d.id);
-    const sv     = document.getElementById('sv-' + d.id);
+    
+    // 🔴 FIX: لا تعرض نتائج إذا لم يكن هناك نشاط
+    const avg = (recent.length && S.compressionCount >= 3)
+      ? Math.round(recent.reduce((a, b) => a + b, 0) / recent.length)
+      : 0;
+      
+    const sb = document.getElementById('sb-' + d.id);
+    const sv = document.getElementById('sv-' + d.id);
     if (sb) {
       sb.style.width      = avg + '%';
       sb.style.background = avg >= 75 ? 'var(--good)' : avg >= 50 ? 'var(--warn)' : 'var(--bad)';
@@ -204,7 +221,28 @@ function startSimMode() {
 function buildResults() {
   const criteria = ACTIVE_CRITERIA;
   if (!criteria) { showPage('results'); return; }
-
+   
+// 🔴 FIX: إذا لم تُسجَّل حركات كافية، أعطِ نتيجة صفر مع رسالة
+  if (S.compressionCount < 3) {
+    cleanup();
+    document.getElementById('resultEyebrow').textContent = `Session Report — ${criteria.name}`;
+    document.getElementById('result-title').textContent = 'No Activity Detected';
+    document.getElementById('score-grade').textContent = 'N/A';
+    document.getElementById('score-grade').style.color = 'var(--text-dim)';
+    document.getElementById('score-grade-desc').textContent = 
+      'No actions were recorded. Please enable camera and perform the skill.';
+    document.getElementById('final-score-num').textContent = '0';
+    document.getElementById('breakdown-grid').innerHTML = 
+      `<div style="text-align:center;color:var(--text-dim);font-family:var(--fm);padding:24px;">
+        No movement detected during the session.
+      </div>`;
+    document.getElementById('tips-list').innerHTML = criteria.improvement_tips
+      .map((t, i) => `<div class="tip-item"><span class="tip-num">0${i + 1}</span><span>${t}</span></div>`)
+      .join('');
+    showPage('results');
+    return;
+  }
+   
   const finalBreakdown = criteria.dimensions.map(d => {
     const h   = S.dimensionScoreHistory[d.id] || [];
     const avg = h.length ? Math.round(h.reduce((a, b) => a + b, 0) / h.length) : 30;
