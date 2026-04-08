@@ -36,17 +36,10 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   position:sticky;top:0;z-index:100;flex-shrink:0}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);
   font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
-/* هذا الكود سيزيل المربع الأزرق ويكبر المساحة */
-.logo-icon {
-  width: 80px;  /* يمكنك زيادة هذا الرقم لتكبير الشعار أكثر */
-  height: 80px; /* تأكدي أن الطول والعرض متساويان */
-  background: transparent; /* هذه الكلمة تجعل الخلفية شفافة وتحذف الأزرق */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none; /* إزالة الظل */
-}
 
+.logo-icon{width:70px;height:70px;background:transparent;border-radius:8px; display:flex;align-items:center;justify-content:center;box-shadow:none}
+display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(59,130,246,0.3)}
+.logo-icon img{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round}
 
 .logo span{color:#ffffff}
 .header-badge{font-family:var(--fm);font-size:11px;color:var(--accent);
