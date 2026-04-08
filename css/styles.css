@@ -49,7 +49,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
 }
 
 .logo-icon img {
-  width: 300px;  /* هنا تكبرين الصورة لحالها (تقدرين تزيدين الرقم أو تنقصينه لين يضبط معك) */
+  width: 100px;  /* هنا تكبرين الصورة لحالها (تقدرين تزيدين الرقم أو تنقصينه لين يضبط معك) */
   height: auto;  /* يخلي الطول متناسق مع العرض تلقائياً */
   object-fit: contain;
 }
