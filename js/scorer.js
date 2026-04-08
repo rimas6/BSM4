@@ -67,24 +67,37 @@ const HeuristicScorer = (() => {
   function scoreAll(criteria, ps, bpm, actionTimes) {
     if (!criteria) return { total: 0, breakdown: [] };
 
-    const breakdown = criteria.dimensions.map(dim => {
-      const isRate = dim.id.includes('rate') || dim.id.includes('count');
-      const score  = isRate
-        ? scoreRate(bpm, criteria.primary_metric)
-        : scoreBySignal(dim, ps);
-      const r = Math.round(score);
+// 🔴 FIX: لا تقيّم إذا لم تُرصد أي حركة حقيقية
+  const hasRealActivity = actionTimes && actionTimes.length >= 3;
+  
+  const breakdown = criteria.dimensions.map(dim => {
+    const isRate = dim.id.includes('rate') || dim.id.includes('count');
+    
+    // إذا لا يوجد نشاط حقيقي، أعطِ صفراً لكل الأبعاد
+    if (!hasRealActivity) {
       return {
         ...dim,
-        score: r,
-        feedback: r >= 75 ? dim.good_feedback : r >= 40 ? dim.warn_feedback : dim.bad_feedback
+        score: 0,
+        feedback: dim.bad_feedback
       };
-    });
-
+    }
+    
+    const score = isRate
+      ? scoreRate(bpm, criteria.primary_metric)
+      : scoreBySignal(dim, ps);
+    const r = Math.round(score);
     return {
-      total: Math.round(breakdown.reduce((s, d) => s + d.score * d.weight, 0)),
-      breakdown
+      ...dim,
+      score: r,
+      feedback: r >= 75 ? dim.good_feedback : r >= 40 ? dim.warn_feedback : dim.bad_feedback
     };
-  }
+  });
+
+  return {
+    total: Math.round(breakdown.reduce((s, d) => s + d.score * d.weight, 0)),
+    breakdown
+  };
+}
 
   return { scoreAll, scoreRate, scoreConsistency, scoreBySignal };
 })();
