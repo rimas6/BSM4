@@ -49,8 +49,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
 }
 
 .logo-icon img {
-  width: 38px;
-  height: 38px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 .logo span{color:#ffffff}
