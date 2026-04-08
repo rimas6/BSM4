@@ -38,19 +38,21 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
 
 .logo-icon {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   background: transparent;
   border-radius: 0;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .logo-icon img {
-  width: 38px;
-  height: 38px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
+  filter: invert(1) brightness(1.2);
 }
 
 .logo span{color:#ffffff}
