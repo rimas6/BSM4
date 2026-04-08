@@ -38,21 +38,21 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hid
   font-size:17px;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
 
 .logo-icon {
-  width: 44px;
-  height: 44px;
+  width: auto;   /* يخلي المساحة تأخذ حجم الصورة بالضبط بدون ما تعرض البار */
+  height: auto;
   background: transparent;
   border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: none;
 }
 
 .logo-icon img {
-  width: 100%;  /* جعلنا عرض الصورة يأخذ 100% من مساحة الحاوية الجديدة */
-  height: 100%; /* جعلنا ارتفاع الصورة يأخذ 100% من مساحة الحاوية الجديدة */
+  width: 180px;  /* هنا تكبرين الصورة لحالها (تقدرين تزيدين الرقم أو تنقصينه لين يضبط معك) */
+  height: auto;  /* يخلي الطول متناسق مع العرض تلقائياً */
   object-fit: contain;
 }
-
 .logo span{color:#ffffff}
 .header-badge{font-family:var(--fm);font-size:11px;color:var(--accent);
   background:var(--accent-dim);border:1px solid var(--border-bright);
